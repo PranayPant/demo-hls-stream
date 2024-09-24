@@ -1,0 +1,19 @@
+name: demo-hls-stream
+
+services:
+  ws-server:
+    build: ./services/ws-server
+    image: ws-server
+    ports:
+      - 3000:3000
+  media-server:
+    build: ./services/rtmp-server
+    image: rtmp-server
+    ports:
+      - 8000:8000
+      - 1935:1935
+    volumes:
+      - hls:/app/media
+
+volumes:
+  hls:
