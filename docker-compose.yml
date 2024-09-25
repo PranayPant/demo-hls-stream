@@ -6,14 +6,13 @@ services:
     image: ws-server
     ports:
       - 3000:3000
-  media-server:
+  rtmp-server:
     build: ./services/rtmp-server
     image: rtmp-server
     ports:
-      - 8000:8000
       - 1935:1935
     volumes:
-      - hls:/app/media
+      - hls:/tmp/hls
 
 volumes:
   hls:
