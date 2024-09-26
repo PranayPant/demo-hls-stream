@@ -11,6 +11,7 @@ services:
     image: rtmp-server
     ports:
       - 1935:1935
+      - 80:80
     volumes:
       - hls:/tmp/hls
 
