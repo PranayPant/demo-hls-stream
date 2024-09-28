@@ -1,19 +1,29 @@
 name: demo-hls-stream
 
 services:
-  ws-server:
-    build: ./services/ws-server
-    image: ws-server
+  hls-server:
+    build: ./services/hls-server
+    image: hls-server
     ports:
-      - 3000:3000
+      - 80:80
+    volumes:
+      - hls:/tmp/hls
+    networks:
+      - my-network
+    depends_on:
+      - rtmp-server
+
   rtmp-server:
     build: ./services/rtmp-server
     image: rtmp-server
     ports:
       - 1935:1935
-      - 80:80
-    volumes:
-      - hls:/tmp/hls
+    networks:
+      - my-network
 
 volumes:
   hls:
+
+networks:
+  my-network:
+    driver: bridge
