@@ -78,7 +78,8 @@ RUN apk add --no-cache \
   opus \
   rtmpdump \
   x264-dev \
-  x265-dev
+  x265-dev \
+  ffmpeg
 
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-nginx /etc/nginx /etc/nginx

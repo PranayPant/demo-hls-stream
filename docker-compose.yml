@@ -2,24 +2,27 @@ name: demo-hls-stream
 
 services:
   hls-server:
+    container_name: hls-server
     build: ./services/hls-server
     image: hls-server
     ports:
       - 80:80
+      - 1936:1936
     volumes:
       - hls:/tmp/hls
     networks:
       - my-network
-    depends_on:
-      - rtmp-server
 
   rtmp-server:
+    container_name: rtmp-server
     build: ./services/rtmp-server
     image: rtmp-server
     ports:
       - 1935:1935
     networks:
       - my-network
+    depends_on:
+      - hls-server
 
 volumes:
   hls:
