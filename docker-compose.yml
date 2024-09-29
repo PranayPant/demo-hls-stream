@@ -6,10 +6,9 @@ services:
     build: ./services/hls-server
     image: hls-server
     ports:
-      - 80:80
-      - 1936:1936
-    volumes:
-      - hls:/tmp/hls
+      - 8080:80
+    expose:
+      - 1935
     networks:
       - my-network
 
@@ -19,13 +18,23 @@ services:
     image: rtmp-server
     ports:
       - 1935:1935
+    expose:
+      - 1935
     networks:
       - my-network
     depends_on:
       - hls-server
 
-volumes:
-  hls:
+  ws-server:
+    container_name: ws-server
+    build: ./services/ws-server
+    image: ws-server
+    ports:
+      - 3000:3000
+    networks:
+      - my-network
+    depends_on:
+      - rtmp-server
 
 networks:
   my-network:

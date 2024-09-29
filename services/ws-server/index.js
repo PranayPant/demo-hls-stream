@@ -33,7 +33,7 @@ wss.on("connection", (ws, req) => {
 
   const queryString = url.parse(req.url).search;
   const params = new URLSearchParams(queryString);
-  const baseUrl = params.get("url") ?? "rtmp://localhost:1935/live";
+  const baseUrl = params.get("url") ?? "rtmp://rtmp-server:1935/live";
   const key = params.get("key") ?? "mytv";
   const video = params.get("video");
   const audio = params.get("audio");
@@ -120,7 +120,7 @@ wss.on("connection", (ws, req) => {
   });
 
   ws.on("close", (e) => {
-    console.log("shit got closed, yo");
+    console.log("Client closed the connection");
     ffmpeg.kill("SIGINT");
   });
 });
