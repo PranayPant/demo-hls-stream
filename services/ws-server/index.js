@@ -67,17 +67,17 @@ wss.on("connection", (ws, req) => {
     // "-async",
     // "1",
 
-    ...videoCodec,
+    // ...videoCodec,
 
-    ...audioCodec,
+    // ...audioCodec,
     //'-filter_complex', 'aresample=44100', // resample audio to 44100Hz, needed if input is not 44100
     //'-strict', 'experimental',
     // "-bufsize",
     // "1000",
     "-f",
     "flv",
-    "-profile:v",
-    "baseline",
+    // "-profile:v",
+    // "baseline",
     rtmpUrl,
   ]);
 
