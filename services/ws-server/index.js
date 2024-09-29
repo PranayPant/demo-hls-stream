@@ -35,33 +35,21 @@ wss.on("connection", (ws, req) => {
   const params = new URLSearchParams(queryString);
   const baseUrl = params.get("url") ?? "rtmp://rtmp-server:1935/live";
   const key = params.get("key") ?? "mytv";
-  const video = params.get("video");
-  const audio = params.get("audio");
 
   const rtmpUrl = `${baseUrl}/${key}`;
 
-  console.log("RTMP URL is", rtmpUrl);
+  const videoCodec = [
+    "-c:v",
+    "libx264",
+    "-preset",
+    "veryfast",
+    // "-tune",
+    // "zerolatency",
+    // "-vf",
+    // "scale=-2:0",
+  ];
 
-  const videoCodec =
-    video === "h264" && !transcode
-      ? ["-c:v", "copy"]
-      : // video codec config: low latency, adaptive bitrate
-        [
-          "-c:v",
-          "libx264",
-          "-preset",
-          "veryfast",
-          "-tune",
-          "zerolatency",
-          "-vf",
-          "scale=w=-2:0",
-        ];
-
-  const audioCodec =
-    audio === "aac" && !transcode
-      ? ["-c:a", "copy"]
-      : // audio codec config: sampling frequency (11025, 22050, 44100), bitrate 64 kbits
-        ["-c:a", "aac", "-ar", "44100", "-b:a", "64k"];
+  const audioCodec = ["-c:a", "aac", "-b:a", "128k"];
 
   const ffmpeg = child_process.spawn("ffmpeg", [
     "-i",
@@ -70,22 +58,26 @@ wss.on("connection", (ws, req) => {
     //force to overwrite
     "-y",
 
+    "-v",
+    "error",
+
     // used for audio sync
-    "-use_wallclock_as_timestamps",
-    "1",
-    "-async",
-    "1",
+    // "-use_wallclock_as_timestamps",
+    // "1",
+    // "-async",
+    // "1",
 
     ...videoCodec,
 
     ...audioCodec,
     //'-filter_complex', 'aresample=44100', // resample audio to 44100Hz, needed if input is not 44100
     //'-strict', 'experimental',
-    "-bufsize",
-    "1000",
+    // "-bufsize",
+    // "1000",
     "-f",
     "flv",
-
+    "-profile:v",
+    "baseline",
     rtmpUrl,
   ]);
 
