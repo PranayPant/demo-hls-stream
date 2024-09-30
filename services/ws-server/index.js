@@ -38,48 +38,19 @@ wss.on("connection", (ws, req) => {
 
   const rtmpUrl = `${baseUrl}/${key}`;
 
-  const videoCodec = [
-    "-c:v",
-    "libx264",
-    "-preset",
-    "veryfast",
-    // "-tune",
-    // "zerolatency",
-    // "-vf",
-    // "scale=-2:0",
-  ];
-
-  const audioCodec = ["-c:a", "aac", "-b:a", "128k"];
-
-  const ffmpeg = child_process.spawn("ffmpeg", [
+  const ops = [
     "-i",
-    "-",
-
-    //force to overwrite
-    "-y",
-
-    "-v",
-    "error",
-
-    // used for audio sync
-    // "-use_wallclock_as_timestamps",
-    // "1",
-    // "-async",
-    // "1",
-
-    // ...videoCodec,
-
-    // ...audioCodec,
-    //'-filter_complex', 'aresample=44100', // resample audio to 44100Hz, needed if input is not 44100
-    //'-strict', 'experimental',
-    // "-bufsize",
-    // "1000",
+    "-", // Read from STDIN -- corresponding to we're passing raw binary video stream from socket.io to FFMPEG via STDIN pipe
+    "-b:v",
+    "2500K",
+    "-b:a",
+    "128K",
     "-f",
     "flv",
-    // "-profile:v",
-    // "baseline",
     rtmpUrl,
-  ]);
+  ];
+
+  const ffmpeg = child_process.spawn("ffmpeg", ops);
 
   // Kill the WebSocket connection if ffmpeg dies.
   ffmpeg.on("close", (code, signal) => {
